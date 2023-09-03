@@ -1,12 +1,12 @@
-import { TodoStatus, todoDataType } from "@/model";
-import React, { useEffect } from "react";
+import { LOCAL_STORAGE_KEY, TodoStatus, todoDataType } from "@/model";
+import React, { useState, useEffect } from "react";
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
-// Define the type for your store state
 type Todos = {
   todoList: todoDataType[];
   createTodo: (params: createTodoParams) => void;
-  editTodo: (params: editTodoParams) => void;
+  updateTodo: (params: updateTodoParams) => void;
   removeTodo: (id: string) => void;
 };
 
@@ -16,72 +16,97 @@ type createTodoParams = {
   order: number;
 };
 
-type editTodoParams = {
+type updateTodoParams = {
   id: any;
   status: TodoStatus;
   body: any;
   order: number;
 };
 
-const LOCAL_STORAGE_KEY = "todos"; // Key for local storage
-
+const time = new Date();
 const initialTodos: todoDataType[] = [
   {
-    id: new Date().getTime(),
-    status: "doing",
-    body: "Sample Todo 1",
+    id: time.getTime().toString(),
+    status: "todo",
+    body: "Start with meditation, exercise & breakfast for a productive day",
     order: 1,
   },
   {
-    id: new Date().getTime() + 1,
-    status: "doing",
-    body: "Sample Todo 2",
+    id: (time.getTime() + 1).toString(),
+    status: "todo",
+    body: "Start with meditation, exercise & breakfast for a productive day",
     order: 2,
   },
   {
-    id: new Date().getTime() + 2,
-    status: "doing",
-    body: "Sample Todo 3",
+    id: (time.getTime() + 2).toString(),
+    status: "done",
+    body: "Learn something fresh & relevant",
     order: 3,
+  },
+  {
+    id: (time.getTime() + 3).toString(),
+    status: "doing",
+    body: "Engage & question in meetings",
+    order: 4,
+  },
+  {
+    id: (time.getTime() + 4).toString(),
+    status: "doing",
+    body: "Use time-blocking for effective days",
+    order: 5,
+  },
+  {
+    id: (time.getTime() + 5).toString(),
+    status: "todo",
+    body: "Finished online course - check!",
+    order: 6,
+  },
+  {
+    id: (time.getTime() + 6).toString(),
+    status: "done",
+    body: "Congratulate yourself for incorporating healthier habits into your lifestyle, like regular exercise or mindful eating",
+    order: 7,
   },
 ];
 
-const useTodos = create<Todos>((set) => {
-  // Initialize the todoList state with initialTodos
-  const [todoList, setTodoList] = React.useState<todoDataType[]>(initialTodos);
+export const useTodos = create<Todos>()(
+  persist(
+    (set, get) => ({
+      todoList: initialTodos,
 
-  // Effect to update local storage whenever todoList changes
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todoList));
-  }, [todoList]);
+      createTodo: ({ status, body, order }: createTodoParams) => {
+        set((state) => ({
+          todoList: [
+            ...state.todoList,
+            {
+              id: time.getTime().toString(),
+              status,
+              body,
+              order,
+            },
+          ],
+        }));
+      },
 
-  return {
-    todoList,
+      updateTodo: ({ body, id, order, status }: updateTodoParams) => {
+        set((state) => ({
+          todoList: state.todoList.map((todo) =>
+            todo.id === id ? { ...todo, body, order, status } : todo,
+          ),
+        }));
+      },
 
-    // Create a new todo item
-    createTodo: ({ status, body, order }) => {
-      const newTodo: todoDataType = {
-        id: new Date().getTime(), // Generate a new timestamp-based ID
-        status,
-        body,
-        order, // You can set the order as per your logic
-      };
-
-      setTodoList((prevList) => [...prevList, newTodo]);
+      removeTodo: (id: string) => {
+        set((state) => ({
+          todoList: state.todoList.filter((todo) => todo.id !== id),
+        }));
+      },
+    }),
+    {
+      name: LOCAL_STORAGE_KEY, // name of item in the storage (must be unique)
+      storage: createJSONStorage(() => sessionStorage), // (optional) by default the 'localStorage' is used
     },
-
-    // Edit an existing todo item
-    editTodo: ({ body, id, order, status }) => {
-      setTodoList((prevList) =>
-        prevList.map((todo) => (todo.id === id ? { ...todo, body, order, status } : todo)),
-      );
-    },
-
-    // Remove a todo item by ID
-    removeTodo: (id) => {
-      setTodoList((prevList) => prevList.filter((todo) => todo.id !== id));
-    },
-  };
-});
+  ),
+);
 
 export default useTodos;

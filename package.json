@@ -12,11 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@iconify/react": "^4.1.1",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "css-loader": "^6.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-useanimations": "^2.10.0",
     "style-loader": "^3.3.3",
     "uuid": "^9.0.0",
     "zustand": "^4.4.1"

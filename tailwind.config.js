@@ -11,7 +11,7 @@ const customColors = {
   doingAction: "#C2A25B",
   doneTitle: "#286C1A",
   doneBackground: "#F4F9F3",
-  doneInfo: "#F4F9F3",
+  doneInfo: "#BCD7B6",
   doneAction: "",
 };
 

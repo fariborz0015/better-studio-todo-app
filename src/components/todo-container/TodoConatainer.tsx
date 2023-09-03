@@ -1,13 +1,13 @@
 import React from "react";
 
-import { TodoStatus } from "@/model";
+import { TodoStatus, todoDataType } from "@/model";
 import { colorDetective } from "@/utils/helpers";
-import { TodoItemProps } from "../todo-item/TodoItem";
+import { TodoItem, TodoItemProps } from "../todo-item/TodoItem";
 
 type TodoConatainerDataType = {
   taskCount?: number | string;
   title: string;
-  items?: TodoItemProps[];
+  items?: todoDataType[];
   todoMode: TodoStatus;
 };
 const TodoConatainer = (props: TodoConatainerDataType) => {
@@ -25,7 +25,11 @@ const TodoConatainer = (props: TodoConatainerDataType) => {
         <b className={`text-${color.title}`}>{props?.title}</b>
         <span className={`text-${color.info}`}> {props?.taskCount} task</span>
       </div>
-      <div className="mt-5"></div>
+      <div className="mt-5 flex flex-col gap-4">
+        {props.items?.map((item) => (
+          <TodoItem item={item} key={item.id} />
+        ))}
+      </div>
     </div>
   );
 };
