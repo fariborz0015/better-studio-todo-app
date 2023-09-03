@@ -3,7 +3,7 @@ import React from 'react';
 function App() {
   return (
     <div>
-      <h1>Hello, React with TypeScript!</h1>
+      <h1 className='text-red-500'>Hello, React with TypeScript!</h1>
     </div>
   );
 }
