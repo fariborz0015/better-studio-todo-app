@@ -1,16 +1,21 @@
 import React, { ReactNode } from "react";
-import LogicLayout from "./LogicLayout";
-import UiLayout from "./UiLayout";
 
-interface LayoutProps {
+interface IndexProps {
   children: ReactNode;
 }
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Index: React.FC<IndexProps> = ({ children }) => {
   return (
-    <LogicLayout>
-      <UiLayout>{children}</UiLayout>
-    </LogicLayout>
+    <div className="container pt-[70px]">
+      <div className="w-full">
+        <h1 className="text-xl">✔️ Task List</h1>
+        <p>
+          Break your life to simple tasks to get things done! Does not matter how many tasks you
+          done, It’s important to break to small tasks and be on progress.
+        </p>
+      </div>
+      {children}
+    </div>
   );
 };
 
-export default Layout;
+export default Index;
