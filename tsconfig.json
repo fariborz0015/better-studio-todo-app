@@ -11,8 +11,14 @@
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {
-      "*": ["src/*"]
+      "*": ["src/*"],
+      "@/containers/*": ["./src/containers/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/utils/*": ["./src/utils/*"],
+      "@/model/*": ["./src/model/*"]
     }
   },
-  "include": ["src/**/*.tsx", "src/**/*.ts"]
+
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }
