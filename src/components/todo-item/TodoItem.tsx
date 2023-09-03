@@ -1,11 +1,7 @@
- 
-import { TodoStatus } from "@/model";
+import { TodoStatus, todoDataType } from "@/model";
 import React from "react";
 
-export interface TodoItemProps {
-  status: TodoStatus;
-  body: any;
-}
+export interface TodoItemProps extends todoDataType {}
 export const TodoItem = () => {
   return <div>TodoItem</div>;
 };
