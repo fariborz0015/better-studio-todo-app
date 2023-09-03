@@ -1,11 +1,8 @@
 import React from "react";
+import Layout from "./layout/Layout";
 
 function App() {
-  return (
-    <div>
-      <h1 className="text-red-500">Hello, React with TypeScript!</h1>
-    </div>
-  );
+  return <Layout>test</Layout>;
 }
 
 export default App;
