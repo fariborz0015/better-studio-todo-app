@@ -1,7 +1,8 @@
-import { TodoItemProps } from "../todo-item/TodoItem";
-import { TodoStatus } from "model";
 import React from "react";
-import { colorDetective } from "../../utils/helpers";
+
+import { TodoStatus } from "@/model";
+import { colorDetective } from "@/utils/helpers";
+import { TodoItemProps } from "../todo-item/TodoItem";
 
 type TodoConatainerDataType = {
   taskCount?: number | string;

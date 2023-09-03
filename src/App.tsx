@@ -1,6 +1,6 @@
 import React from "react";
 import Layout from "./layout/Layout";
-import TodoConatainer from "./components/todo-container/TodoConatainer";
+import TodoConatainer from "@/components/todo-container/TodoConatainer";
  
 
 function App() {

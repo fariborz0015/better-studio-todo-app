@@ -1,4 +1,5 @@
-import { TodoStatus } from "model";
+ 
+import { TodoStatus } from "@/model";
 import React from "react";
 
 export interface TodoItemProps {

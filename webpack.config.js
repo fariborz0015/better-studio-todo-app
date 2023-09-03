@@ -19,6 +19,9 @@ module.exports = {
     liveReload: true,
   },
   resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "src"), // Map "@" to your source directory
+    },
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
   },
   module: {
