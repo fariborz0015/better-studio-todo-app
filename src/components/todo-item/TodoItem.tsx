@@ -45,6 +45,13 @@ export const TodoItem = ({ item }: TodoItemProps) => {
   // Handle remove button click event
   const handleRemoveClick = () => {
     setAnimation(true);
+
+    //play music
+
+    let sound = document.querySelector("#drop-audio");
+    //@ts-ignore
+    sound.play();
+
     // Remove the todo item from the list
     setTimeout(() => {
       removeTodo(item.id);

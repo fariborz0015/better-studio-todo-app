@@ -20,6 +20,9 @@ const TodoConatainer = (props: TodoConatainerDataType) => {
       body: "New TODO",
       status: props.todoMode,
     });
+    let sound = document.querySelector("#blop-audio");
+    //@ts-ignore
+    sound.play();
   };
 
   const color = {
@@ -53,6 +56,11 @@ const TodoConatainer = (props: TodoConatainerDataType) => {
                       index={todoList.findIndex((x) => x.id == item.id)}
                     >
                       {(DragableProvided, DragableSnapshot) => {
+                        if (DragableSnapshot.isDropAnimating) {
+                          let sound = document.querySelector("#blop-audio");
+                          //@ts-ignore
+                          sound.play();
+                        }
                         return (
                           <div
                             ref={DragableProvided.innerRef}
