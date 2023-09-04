@@ -21,6 +21,10 @@ export const STATUS_KEY_LABEL: {
     label: "Done 🎉",
   },
 ];
+
+
+
+
 export type Todo = "todo";
 export type Doing = "doing";
 export type Done = "done";
@@ -30,5 +34,5 @@ export interface todoDataType {
   id: any;
   status: TodoStatus;
   body: any;
-  order: number;
+  order?: number;
 }

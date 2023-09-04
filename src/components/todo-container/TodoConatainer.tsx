@@ -1,26 +1,27 @@
 import React from "react";
-
-import { DONE, TODO, TodoStatus, todoDataType } from "@/model";
+import { DONE, TodoStatus, todoDataType } from "@/model";
 import { colorDetective } from "@/utils/helpers";
-import { TodoItem, TodoItemProps } from "../todo-item/TodoItem";
+import { TodoItem } from "../todo-item/TodoItem";
 import { Icon } from "@iconify/react";
 import useTodos from "@/hooks/useTodos";
 
+import { Droppable, Draggable } from "react-beautiful-dnd";
 type TodoConatainerDataType = {
   taskCount?: number | string;
   title: string;
-  items?: todoDataType[];
+  items: todoDataType[];
   todoMode: TodoStatus;
 };
 const TodoConatainer = (props: TodoConatainerDataType) => {
-  const { createTodo } = useTodos();
+  const { createTodo, todoList } = useTodos();
+
   const createNewTodo = () => {
     createTodo({
       body: "New TODO",
-      order: props.items?.length ?? 99,
       status: props.todoMode,
     });
   };
+
   const color = {
     title: colorDetective[props.todoMode].title,
     background: colorDetective[props.todoMode].background,
@@ -36,13 +37,50 @@ const TodoConatainer = (props: TodoConatainerDataType) => {
         <b className={`text-${color.title}`}>{props?.title}</b>
         <span className={`text-${color.info}`}> {props?.taskCount} task</span>
       </div>
-      <div className="mt-5 flex flex-col gap-4">
-        {props.items?.length == 0 ? (
-          <div className="w-full text-center text-gray-400">no have any task</div>
-        ) : (
-          props.items?.map((item) => <TodoItem item={item} key={item.id} />)
-        )}
-      </div>
+
+      <Droppable droppableId={props.todoMode}>
+        {(provided, snapshot) => {
+          return (
+            <div className="mt-5  space-y-4  " {...provided.droppableProps} ref={provided.innerRef}>
+              {props.items?.length == 0 ? (
+                <div className="w-full text-center text-gray-400">no have any task</div>
+              ) : (
+                props.items.map((item, index) => (
+                  <>
+                    <Draggable
+                      key={item.id}
+                      draggableId={item.id}
+                      index={todoList.findIndex((x) => x.id == item.id)}
+                    >
+                      {(DragableProvided, DragableSnapshot) => {
+                        return (
+                          <div
+                            ref={DragableProvided.innerRef}
+                            {...DragableProvided.draggableProps}
+                            {...DragableProvided.dragHandleProps}
+                            className={`relative  `}
+                          >
+                            <div
+                              className={` bg-${
+                                color.info
+                              } h-[inherit] absolute rounded  opacity-50  w-full   ${
+                                DragableSnapshot.isDropAnimating && ` animate-ping blur-lg`
+                              }`}
+                            ></div>
+
+                            <TodoItem item={item} key={item.id} />
+                          </div>
+                        );
+                      }}
+                    </Draggable>
+                  </>
+                ))
+              )}
+            </div>
+          );
+        }}
+      </Droppable>
+
       {props.todoMode != DONE && (
         <button
           onClick={createNewTodo}

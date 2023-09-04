@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { DONE, TODO, todoDataType } from "@/model";
 import { colorDetective } from "@/utils/helpers";
@@ -10,14 +10,22 @@ export interface TodoItemProps {
 }
 
 export const TodoItem = ({ item }: TodoItemProps) => {
+  const [animation, setAnimation] = useState(false);
+
   // Determine if the todo item is marked as done
   const isDone = item.status === DONE;
-
+  const rowOfInput = () => {
+    if (item.body.split("\n").length > 1) {
+      return item.body.split("\n").length;
+    } else {
+      return Math.ceil(item.body.length / 24);
+    }
+  };
   // Retrieve the color theme based on the todo status
   const colors = colorDetective[item.status];
 
   // Access the updateTodo and removeTodo functions from the custom hook
-  const { updateTodo, removeTodo, createMultiTodo } = useTodos();
+  const { updateTodo, removeTodo, createMultiTodo, todoList } = useTodos();
 
   // Reference to the textarea element for updating its value
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -36,8 +44,11 @@ export const TodoItem = ({ item }: TodoItemProps) => {
 
   // Handle remove button click event
   const handleRemoveClick = () => {
+    setAnimation(true);
     // Remove the todo item from the list
-    removeTodo(item.id);
+    setTimeout(() => {
+      removeTodo(item.id);
+    }, 1000);
   };
 
   // Handle clipboard paste event
@@ -56,7 +67,7 @@ export const TodoItem = ({ item }: TodoItemProps) => {
       // Create multiple todos for each line
       const newTodos = clearedPastedTextOfWhiteSpace.map((newItem, index) => ({
         body: newItem,
-        order: item.order + index, // You should define 'item' appropriately
+        order: todoList.length, // You should define 'item' appropriately
         status: item.status, // You should define 'item' appropriately
       }));
 
@@ -70,7 +81,13 @@ export const TodoItem = ({ item }: TodoItemProps) => {
 
   return (
     <div
-      className={`py-3 px-[10px] h-fit group bg-white rounded-[4px] text-xs border-opacity-50 hover:border-opacity-100 transition-all border border-${colors.info}`}
+      className={`
+      animate__animated
+ 
+      ${animation ? "animate__rotateOutDownLeft" : "animate__jello"}
+      py-3 px-[10px] !relative h-fit group bg-white rounded-[4px] text-xs border-opacity-50 hover:border-opacity-100 transition-all border border-${
+        colors.info
+      }`}
     >
       <div className="flex gap-4 items-center h-fit">
         <div className="w-fit">
@@ -83,10 +100,10 @@ export const TodoItem = ({ item }: TodoItemProps) => {
           <textarea
             onPaste={handleClipboardPaste}
             ref={textareaRef}
+            rows={rowOfInput()}
             onChange={(e) => handleTextareaChange(e.target.value)}
-            rows={item.body.length / 24}
-            className="resize-none break-words flex-1 min-h-min overflow-hidden"
-            value={item.body}
+            className="resize-none break-all   flex-1    "
+            defaultValue={item?.body}
           />
         )}
         <div className="w-6">

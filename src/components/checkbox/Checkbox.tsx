@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import UseAnimations from "react-useanimations";
 import checkbox from "react-useanimations/lib/checkBox";
 
