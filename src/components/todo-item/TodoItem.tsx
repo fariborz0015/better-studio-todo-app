@@ -17,7 +17,7 @@ export const TodoItem = ({ item }: TodoItemProps) => {
   const colors = colorDetective[item.status];
 
   // Access the updateTodo and removeTodo functions from the custom hook
-  const { updateTodo, removeTodo } = useTodos();
+  const { updateTodo, removeTodo, createMultiTodo } = useTodos();
 
   // Reference to the textarea element for updating its value
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -25,25 +25,47 @@ export const TodoItem = ({ item }: TodoItemProps) => {
   // Handle checkbox change event
   const handleCheckboxChange = (isChecked: boolean) => {
     // Update the todo item's status based on checkbox state
-    updateTodo({
-      ...item,
-      status: isChecked ? DONE : TODO,
-    });
+    updateTodo({ ...item, status: isChecked ? DONE : TODO });
   };
 
   // Handle textarea change event
-  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleTextareaChange = (text: string) => {
     // Update the todo item's body text based on textarea input
-    updateTodo({
-      ...item,
-      body: e.target.value,
-    });
+    updateTodo({ ...item, body: text });
   };
 
   // Handle remove button click event
   const handleRemoveClick = () => {
     // Remove the todo item from the list
     removeTodo(item.id);
+  };
+
+  // Handle clipboard paste event
+  const handleClipboardPaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const clipboardData = e.clipboardData;
+    const pastedText = clipboardData.getData("Text");
+    const linesOfPastedText = pastedText.split("\n");
+
+    // Filter out lines with only whitespace characters
+    const clearedPastedTextOfWhiteSpace = linesOfPastedText.filter((line) => /\S/.test(line));
+
+    if (clearedPastedTextOfWhiteSpace.length > 1) {
+      // Create multiple todos for each line
+      const newTodos = clearedPastedTextOfWhiteSpace.map((newItem, index) => ({
+        body: newItem,
+        order: item.order + index, // You should define 'item' appropriately
+        status: item.status, // You should define 'item' appropriately
+      }));
+
+      createMultiTodo(newTodos); // Assuming 'createMultiTodo' is your function
+      handleRemoveClick(); // Call your remove function here
+    } else {
+      // Handle single line pasted text
+      handleTextareaChange(pastedText); // Assuming 'handleTextareaChange' is your function
+    }
   };
 
   return (
@@ -59,9 +81,10 @@ export const TodoItem = ({ item }: TodoItemProps) => {
           <s className="flex-1">{item.body}</s>
         ) : (
           <textarea
+            onPaste={handleClipboardPaste}
             ref={textareaRef}
-            onChange={handleTextareaChange}
-            rows={item.body.split("\n").length}
+            onChange={(e) => handleTextareaChange(e.target.value)}
+            rows={item.body.length / 24}
             className="resize-none break-words flex-1 min-h-min overflow-hidden"
             value={item.body}
           />

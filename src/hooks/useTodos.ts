@@ -6,6 +6,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 type Todos = {
   todoList: todoDataType[];
   createTodo: (params: createTodoParams) => void;
+  createMultiTodo: (todos: createTodoParams[]) => void;
   updateTodo: (params: updateTodoParams) => void;
   removeTodo: (id: string) => void;
 };
@@ -23,7 +24,10 @@ type updateTodoParams = {
   order: number;
 };
 
+// Generate a unique timestamp for initial IDs
 const time = new Date();
+
+// Define the initial set of todos
 const initialTodos: todoDataType[] = [
   {
     id: time.getTime().toString(),
@@ -69,17 +73,19 @@ const initialTodos: todoDataType[] = [
   },
 ];
 
-export const useTodos = create<Todos>()(
+// Create a custom hook for managing todos
+const useTodos = create<Todos>()(
   persist(
     (set, get) => ({
       todoList: initialTodos,
 
+      // Create a single todo
       createTodo: ({ status, body, order }: createTodoParams) => {
         set((state) => ({
           todoList: [
             ...state.todoList,
             {
-              id: new Date().getTime().toString(),
+              id: new Date().getTime().toString(), // Generate a unique ID
               status,
               body,
               order,
@@ -88,6 +94,21 @@ export const useTodos = create<Todos>()(
         }));
       },
 
+      // Create multiple todos
+      createMultiTodo: (params: createTodoParams[]) => {
+        set((state) => ({
+          todoList: [
+            ...state.todoList,
+            ...params.map((item, index) => ({
+              ...item,
+              id: new Date().getTime() + index.toString(), // Generate unique IDs
+              order: state.todoList.length + 1, // Increment order
+            })),
+          ],
+        }));
+      },
+
+      // Update a todo
       updateTodo: ({ body, id, order, status }: updateTodoParams) => {
         set((state) => ({
           todoList: state.todoList.map((todo) =>
@@ -96,6 +117,7 @@ export const useTodos = create<Todos>()(
         }));
       },
 
+      // Remove a todo
       removeTodo: (id: string) => {
         set((state) => ({
           todoList: state.todoList.filter((todo) => todo.id !== id),
@@ -103,8 +125,8 @@ export const useTodos = create<Todos>()(
       },
     }),
     {
-      name: LOCAL_STORAGE_KEY, // name of item in the storage (must be unique)
-      storage: createJSONStorage(() => sessionStorage), // (optional) by default the 'localStorage' is used
+      name: LOCAL_STORAGE_KEY, // Name of item in the storage (must be unique)
+      storage: createJSONStorage(() => sessionStorage), // (Optional) By default, 'localStorage' is used
     },
   ),
 );
