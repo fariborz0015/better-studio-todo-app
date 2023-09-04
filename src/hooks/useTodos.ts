@@ -82,7 +82,10 @@ const useTodos = create<Todos>()(
         set((state) => {
           const reorderedList = [...state.todoList];
           const [draggedItem] = reorderedList.splice(startIndex, 1);
-          reorderedList.splice(endIndex, 0, { ...draggedItem, status });
+          reorderedList.splice(endIndex - 1 >= 0 ? endIndex - 1 : 0, 0, {
+            ...draggedItem,
+            status,
+          });
           reorderedList.forEach((todo, index) => (todo.order = index));
           return { todoList: reorderedList };
         });

@@ -49,39 +49,37 @@ const TodoConatainer = (props: TodoConatainerDataType) => {
                 <div className="w-full text-center text-gray-400">no have any task</div>
               ) : (
                 props.items.map((item, index) => (
-                  <>
-                    <Draggable
-                      key={item.id}
-                      draggableId={item.id}
-                      index={todoList.findIndex((x) => x.id == item.id)}
-                    >
-                      {(DragableProvided, DragableSnapshot) => {
-                        if (DragableSnapshot.isDropAnimating) {
-                          let sound = document.querySelector("#blop-audio");
-                          //@ts-ignore
-                          sound.play();
-                        }
-                        return (
+                  <Draggable
+                    key={item.id}
+                    draggableId={item.id}
+                    index={todoList.findIndex((x) => x.id == item.id)}
+                  >
+                    {(DragableProvided, DragableSnapshot) => {
+                      if (DragableSnapshot.isDropAnimating) {
+                        let sound = document.querySelector("#blop-audio");
+                        //@ts-ignore
+                        sound.play();
+                      }
+                      return (
+                        <div
+                          ref={DragableProvided.innerRef}
+                          {...DragableProvided.draggableProps}
+                          {...DragableProvided.dragHandleProps}
+                          className={`relative  `}
+                        >
                           <div
-                            ref={DragableProvided.innerRef}
-                            {...DragableProvided.draggableProps}
-                            {...DragableProvided.dragHandleProps}
-                            className={`relative  `}
-                          >
-                            <div
-                              className={` bg-${
-                                color.info
-                              } h-[inherit] absolute rounded  opacity-50  w-full   ${
-                                DragableSnapshot.isDropAnimating && ` animate-ping blur-lg`
-                              }`}
-                            ></div>
+                            className={` bg-${
+                              color.info
+                            } h-[inherit] absolute rounded  opacity-50  w-full   ${
+                              DragableSnapshot.isDropAnimating && ` animate-ping blur-lg`
+                            }`}
+                          ></div>
 
-                            <TodoItem item={item} key={item.id} />
-                          </div>
-                        );
-                      }}
-                    </Draggable>
-                  </>
+                          <TodoItem item={item} key={item.id} />
+                        </div>
+                      );
+                    }}
+                  </Draggable>
                 ))
               )}
             </div>
