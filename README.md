@@ -43,12 +43,12 @@ Before you can run this project, you need to have the following software install
 ├── public
     ├── index.html
 └── src
-    ├── components //common component are here 
-    ├── global-styles //global style and tailwindcss utils imported in here
-    ├── hooks // hooks of api or logic handler 
-    ├── layout // layout of app 
-    ├── model // typescript common types and some constants 
-    ├── utils // helper functions files
+    ├── components      //common component are here 
+    ├── global-styles   //global style and tailwindcss utils imported in here
+    ├── hooks           // hooks of api or logic handler 
+    ├── layout          // layout of app 
+    ├── model           // typescript common types and some constants 
+    ├── utils           // helper functions files
     └── App.tsx
 ├── index.tsx
 ├── package.json
