@@ -1,19 +1,23 @@
-import { TodoStatus, todoDataType } from "@/model";
+import { DONE, TODO, TodoStatus, todoDataType } from "@/model";
 import { colorDetective } from "@/utils/helpers";
 import React from "react";
 import Checkbox from "../checkbox/Checkbox";
 import useTodos from "@/hooks/useTodos";
-
+import { Icon } from "@iconify/react";
 export interface TodoItemProps {
   item: todoDataType;
 }
 export const TodoItem = (props: TodoItemProps) => {
-  const isDone = props.item.status == "done";
-  const colors = colorDetective[props.item.status];
-  const { updateTodo } = useTodos();
+  const item = props.item;
+  const isDone = item.status == "done";
+  const colors = colorDetective[item.status];
+  const { updateTodo, removeTodo } = useTodos();
+  const removeTodoHandler = () => {
+    removeTodo(item.id);
+  };
   return (
     <div
-      className={`py-3 px-[10px]  bg-white rounded-[4px] text-xs border-opacity-50 border border-${[
+      className={`py-3 px-[10px]  group bg-white rounded-[4px] text-xs border-opacity-50 hover:border-opacity-100 transition-all border border-${[
         colors.info,
       ]}`}
     >
@@ -23,15 +27,35 @@ export const TodoItem = (props: TodoItemProps) => {
             isChecked={isDone}
             onChange={(e) =>
               updateTodo({
-                ...props.item,
-                status: e == true ? "done" : "todo",
+                ...item,
+                status: e == true ? DONE : TODO,
               })
             }
           />
         </div>
-        {isDone ? <s>{props.item.body}</s> : <input
-        className="w-full min-h-fit break-words"
-        value={props.item.body} />}
+        {isDone ? (
+          <s>{item.body}</s>
+        ) : (
+          <input
+            onChange={(e) =>
+              updateTodo({
+                ...item,
+                body: e.target.value,
+              })
+            }
+            className="w-full min-h-fit break-words"
+            value={item.body}
+          />
+        )}
+
+        <div className=" w-6 ">
+          <button
+            onClick={removeTodoHandler}
+            className={`text-${colors.action} hidden group-hover:block `}
+          >
+            <Icon icon={"mdi:close"} fontSize={24} />
+          </button>
+        </div>
       </div>
     </div>
   );

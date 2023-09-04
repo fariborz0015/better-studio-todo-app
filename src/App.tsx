@@ -18,7 +18,7 @@ function App() {
               items={items}
               todoMode={item.key}
               title={item.label}
-              taskCount={3}
+              taskCount={items.length}
             />
           );
         })}

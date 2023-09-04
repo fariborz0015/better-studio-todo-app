@@ -79,7 +79,7 @@ export const useTodos = create<Todos>()(
           todoList: [
             ...state.todoList,
             {
-              id: time.getTime().toString(),
+              id: new Date().getTime().toString(),
               status,
               body,
               order,
