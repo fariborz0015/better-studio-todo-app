@@ -1,4 +1,5 @@
 import { DOING, DONE, LOCAL_STORAGE_KEY, TODO, TodoStatus, todoDataType } from "@/model";
+import { uniqueId } from "lodash";
 import React, { useState, useEffect } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -82,26 +83,35 @@ const useTodos = create<Todos>()(
         set((state) => {
           const reorderedList = [...state.todoList];
           const [draggedItem] = reorderedList.splice(startIndex, 1);
-          reorderedList.splice(endIndex - 1 >= 0 ? endIndex - 1 : 0, 0, {
+
+          reorderedList.splice(endIndex, 0, {
             ...draggedItem,
             status,
           });
-          reorderedList.forEach((todo, index) => (todo.order = index));
+
           return { todoList: reorderedList };
         });
       },
       createTodo: ({ status, body }: createTodoParams) => {
-        set((state) => ({
-          todoList: [
-            ...state.todoList,
-            {
-              id: Date.now().toString(),
-              status,
-              body,
-              order: state.todoList.length,
-            },
-          ],
-        }));
+        set((state) => {
+          const todos = [...state.todoList];
+          const lastItem = todos
+            .slice()
+            .reverse()
+            .find((item) => item.status == status);
+          const newTodo = {
+            id: uniqueId(),
+            status,
+            body,
+          };
+
+          const insertIndex = todos.findIndex((item) => item.id == lastItem?.id) + 1;
+          const newArray = todos.slice(0, insertIndex).concat(newTodo, todos.slice(insertIndex));
+
+          return {
+            todoList: newArray,
+          };
+        });
       },
       createMultiTodo: (params: createTodoParams[]) => {
         set((state) => ({
