@@ -1,4 +1,4 @@
-import { DOING, LOCAL_STORAGE_KEY, TODO, TodoStatus, todoDataType } from "@/model";
+import { DOING, DONE, LOCAL_STORAGE_KEY, TODO, TodoStatus, todoDataType } from "@/model";
 import React, { useState, useEffect } from "react";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
@@ -63,12 +63,12 @@ const initialTodos: todoDataType[] = [
   },
   {
     id: (time.getTime() + 5).toString(),
-    status: DOING,
+    status: DONE,
     body: "Finished online course - check!!",
   },
   {
     id: (time.getTime() + 6).toString(),
-    status: DOING,
+    status: DONE,
     body: "Congratulate yourself for incorporating healthier habits into your lifestyle, like regular exercise or mindful eating",
   },
 ];
